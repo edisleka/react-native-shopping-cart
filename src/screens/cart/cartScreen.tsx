@@ -8,7 +8,7 @@ export default function CartScreen() {
   const cart = useCartStore((state) => state.cart)
 
   return (
-    <SafeAreaView className='flex-1 px-4'>
+    <SafeAreaView className='flex-1 px-4 bg-slate-50'>
       <Header />
 
       <LegendList
