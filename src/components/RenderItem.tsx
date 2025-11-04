@@ -12,28 +12,42 @@ export const RenderItem = (item: Product) => {
   )
 
   return (
-    <View className='flex-row gap-2.5 mb-4 bg-white p-2.5 rounded-lg'>
-      <Image source={{ uri: item.image }} className='w-24 h-24 ' />
-      <View className='gap-2'>
-        <Text numberOfLines={1} className='text-base font-bold'>
-          {item.title}
-        </Text>
-        <Text className='text-sm text-gray-500 font-semibold'>
-          ${item.price}
-        </Text>
-        <View className='flex-row gap-2.5 items-center'>
+    <View className='flex-row gap-4 mb-4 bg-white p-4 rounded-xl shadow-md border border-gray-100'>
+      <View className='overflow-hidden rounded-xl bg-gray-50'>
+        <Image
+          source={{ uri: item.image }}
+          className='w-28 h-28 object-cover'
+        />
+      </View>
+      <View className='flex-1 gap-3 justify-between'>
+        <View className='gap-1'>
+          <Text
+            numberOfLines={2}
+            className='text-base font-bold text-gray-900 leading-5'
+          >
+            {item.title}
+          </Text>
+          <Text className='text-lg font-bold text-blue-600'>${item.price}</Text>
+        </View>
+        <View className='flex-row gap-3 items-center'>
           <TouchableOpacity
-            className='bg-gray-200 p-1 rounded-md'
+            className='bg-blue-500 p-2 rounded-lg shadow-sm active:bg-blue-600'
             onPress={() => addToCart(item)}
+            activeOpacity={0.7}
           >
-            <Ionicons name='add-outline' size={24} color='black' />
+            <Ionicons name='add-outline' size={20} color='white' />
           </TouchableOpacity>
-          <Text className='text-base font-bold'>{quantity}</Text>
+          <View className='bg-gray-100 px-4 py-1.5 rounded-lg min-w-[40px] items-center'>
+            <Text className='text-base font-bold text-gray-900'>
+              {quantity}
+            </Text>
+          </View>
           <TouchableOpacity
-            className='bg-gray-200 p-1 rounded-md'
+            className='bg-gray-300 p-2 rounded-lg shadow-sm active:bg-gray-400'
             onPress={() => removeFromCart(item)}
+            activeOpacity={0.7}
           >
-            <Ionicons name='remove-outline' size={24} color='black' />
+            <Ionicons name='remove-outline' size={20} color='white' />
           </TouchableOpacity>
         </View>
       </View>

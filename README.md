@@ -39,6 +39,10 @@ A modern React Native shopping cart application built with Expo, featuring a cle
   - `@react-navigation/native` (^7.1.8)
   - `@react-navigation/bottom-tabs` (^7.4.0)
   - `@react-navigation/elements` (^2.6.3)
+- **[NativeTabs](https://docs.expo.dev/router/unstable-native-tabs/)** (from `expo-router/unstable-native-tabs`) - Native bottom tab bar component
+  - Platform-specific icons (SF Symbols for iOS, Vector icons for Android)
+  - Customizable styling and colors
+  - Native performance with smooth animations
 
 ### UI & Styling
 
@@ -143,6 +147,7 @@ shopping-cart/
    ```
 
 3. Start the development server:
+
    ```bash
    npm start
    ```
@@ -224,6 +229,123 @@ Build through Xcode after running `prebuild`
 - Virtualized list rendering with `@legendapp/list`
 - Optimized image loading with `expo-image`
 - Efficient re-renders with Zustand selectors
+
+## NativeTabs Usage
+
+This app uses **NativeTabs** from Expo Router for native bottom tab navigation. NativeTabs provides a fully native tab bar experience with platform-specific styling and performance.
+
+### Implementation
+
+The NativeTabs component is configured in `src/app/(tabs)/_layout.tsx`:
+
+```tsx
+import {
+  NativeTabs,
+  Icon,
+  Label,
+  VectorIcon,
+} from 'expo-router/unstable-native-tabs'
+import { Platform } from 'react-native'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import AntDesign from '@expo/vector-icons/AntDesign'
+
+export default function TabsLayout() {
+  return (
+    <NativeTabs
+      backgroundColor='#FAFAFA'
+      iconColor={{
+        default: '#9CA3AF',
+        selected: '#FAFAFA',
+      }}
+      tintColor='#6366F1'
+      labelStyle={{
+        default: {
+          color: '#9CA3AF',
+          fontSize: 12,
+          fontWeight: '400',
+        },
+        selected: {
+          color: '#6366F1',
+          fontSize: 12,
+          fontWeight: '700',
+        },
+      }}
+      indicatorColor='#6366F1'
+      rippleColor='#6366F1'
+      shadowColor='#00000010'
+    >
+      <NativeTabs.Trigger name='index'>
+        <Label>Home</Label>
+        {Platform.select({
+          ios: <Icon sf={{ default: 'house', selected: 'house.fill' }} />,
+          android: (
+            <Icon src={<VectorIcon family={Ionicons} name='home-outline' />} />
+          ),
+        })}
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name='cart'>
+        <Label>Cart</Label>
+        {Platform.select({
+          ios: <Icon sf={{ default: 'cart', selected: 'cart.fill' }} />,
+          android: (
+            <Icon
+              src={<VectorIcon family={AntDesign} name='shopping-cart' />}
+            />
+          ),
+        })}
+      </NativeTabs.Trigger>
+    </NativeTabs>
+  )
+}
+```
+
+### Key Features
+
+- **Platform-Specific Icons**:
+  - iOS uses SF Symbols via `Icon` component with `sf` prop
+  - Android uses vector icons from `@expo/vector-icons` via `VectorIcon` component
+- **Customizable Styling**:
+  - `backgroundColor` - Tab bar background color
+  - `iconColor` - Icon colors for default and selected states
+  - `tintColor` - Accent color for selected items
+  - `labelStyle` - Text styling for labels (default and selected states)
+  - `indicatorColor` - Active tab indicator color
+  - `rippleColor` - Android ripple effect color
+  - `shadowColor` - Shadow color for tab bar
+
+- **File-Based Routing Integration**:
+  - Each `NativeTabs.Trigger` maps to a route in the `(tabs)` directory
+  - `name` prop corresponds to the route file name (e.g., `index.tsx`, `cart.tsx`)
+
+### Benefits
+
+- ✅ **Native Performance**: Uses native tab bar components (UITabBarController on iOS, BottomNavigationView on Android)
+- ✅ **Platform Consistency**: Automatically matches platform design guidelines
+- ✅ **Smooth Animations**: Native transitions and animations
+- ✅ **Better UX**: Native gestures and interactions
+
+### Adding New Tabs
+
+To add a new tab:
+
+1. Create a new route file in `src/app/(tabs/` directory (e.g., `profile.tsx`)
+2. Add a new `NativeTabs.Trigger` in `_layout.tsx`:
+
+   ```tsx
+   <NativeTabs.Trigger name='profile'>
+     <Label>Profile</Label>
+     {Platform.select({
+       ios: <Icon sf={{ default: 'person', selected: 'person.fill' }} />,
+       android: (
+         <Icon src={<VectorIcon family={Ionicons} name='person-outline' />} />
+       ),
+     })}
+   </NativeTabs.Trigger>
+   ```
+
+### Note
+
+NativeTabs is currently in the `unstable-native-tabs` API, meaning it's experimental and may change in future Expo Router versions. It's recommended for apps requiring native tab bar performance and styling.
 
 ## Development Notes
 
