@@ -4,6 +4,10 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { zustandStorage } from './mmkv'
 
+const calculateItemsCount = (
+  cart: (Product & { quantity: number })[]
+): number => cart.reduce((sum, item) => sum + item.quantity, 0)
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
@@ -11,61 +15,41 @@ export const useCartStore = create<CartStore>()(
       itemsCount: 0,
       addToCart: (product: Product) =>
         set((state) => {
-          const existingProduct = state.cart.find((p) => p.id === product.id)
-
-          if (existingProduct) {
-            const updatedCart = state.cart.map((item) => {
-              if (item.id === product.id) {
-                return {
-                  ...item,
-                  quantity: item.quantity + 1,
-                }
-              }
-              return item
-            })
-            return {
-              cart: updatedCart,
-              itemsCount: state.itemsCount + 1,
-            }
-          } else {
-            return {
-              cart: [...state.cart, { ...product, quantity: 1 }],
-              itemsCount: state.itemsCount + 1,
-            }
-          }
-        }),
-      removeFromCart: (product) => {
-        set((state) => {
-          const updatedCart = state.cart
-            .map((item) => {
-              if (item.id === product.id) {
-                return {
-                  ...item,
-                  quantity: item.quantity - 1,
-                }
-              }
-              return item
-            })
-            .filter((item) => item.quantity > 0)
-
-          const decremented = state.cart.some((i) => i.id === product.id)
-            ? Math.max(0, state.itemsCount - 1)
-            : state.itemsCount
+          const existingIndex = state.cart.findIndex((p) => p.id === product.id)
+          const updatedCart =
+            existingIndex >= 0
+              ? state.cart.map((item, index) =>
+                  index === existingIndex
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+                )
+              : [...state.cart, { ...product, quantity: 1 }]
 
           return {
             cart: updatedCart,
-            itemsCount: decremented,
+            itemsCount: calculateItemsCount(updatedCart),
           }
-        })
-      },
-      clearCart: () => {
-        set(() => {
+        }),
+      removeFromCart: (product: Product) =>
+        set((state) => {
+          const updatedCart = state.cart
+            .map((item) =>
+              item.id === product.id
+                ? { ...item, quantity: item.quantity - 1 }
+                : item
+            )
+            .filter((item) => item.quantity > 0)
+
           return {
-            cart: [],
-            itemsCount: 0,
+            cart: updatedCart,
+            itemsCount: calculateItemsCount(updatedCart),
           }
-        })
-      },
+        }),
+      clearCart: () =>
+        set(() => ({
+          cart: [],
+          itemsCount: 0,
+        })),
     }),
     {
       name: 'cart-storage',
