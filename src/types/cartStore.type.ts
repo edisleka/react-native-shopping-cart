@@ -1,7 +1,7 @@
-import { Product, CartItem } from './product.type'
+import { Product } from './product.type'
 
 export interface CartStore {
-  cart: CartItem[]
+  cart: Product[]
   itemCount: number
   addToCart: (product: Product) => void
   removeFromCart: (productId: number) => void

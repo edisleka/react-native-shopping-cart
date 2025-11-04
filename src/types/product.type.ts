@@ -12,7 +12,3 @@ export interface Product {
   onSale?: boolean
   discount?: number
 }
-
-export interface CartItem extends Product {
-  quantity: number
-}
