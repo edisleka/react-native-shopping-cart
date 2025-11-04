@@ -7,6 +7,9 @@ import { Image } from './Image'
 export const RenderItem = (item: Product) => {
   const addToCart = useCartStore((state) => state.addToCart)
   const removeFromCart = useCartStore((state) => state.removeFromCart)
+  const quantity = useCartStore(
+    (state) => state.cart.find((p) => p.id === item.id)?.quantity ?? 0
+  )
 
   return (
     <View className='flex-row gap-2.5 mb-4 bg-white p-2.5 rounded-lg'>
@@ -25,6 +28,7 @@ export const RenderItem = (item: Product) => {
           >
             <Ionicons name='add-outline' size={24} color='black' />
           </TouchableOpacity>
+          <Text className='text-base font-bold'>{quantity}</Text>
           <TouchableOpacity
             className='bg-gray-200 p-1 rounded-md'
             onPress={() => removeFromCart(item)}
