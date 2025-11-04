@@ -10,6 +10,7 @@
     "color": "Black",
     "category": "Smartphones",
     "popular": true,
+    "onSale": true,
     "discount": 15
   },
   {
@@ -23,6 +24,7 @@
     "color": "Titanium Black",
     "category": "Smartphones",
     "popular": true,
+    "onSale": true,
     "discount": 10
   },
   {
